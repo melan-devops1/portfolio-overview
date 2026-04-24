@@ -1,8 +1,10 @@
 # 📘 DevOps Portfolio - Project Overview
 
+<!-- TODO(Phase 2): 아키텍처 다이어그램 이미지 추가
 <p align="center">
   <img src="./docs/diagrams/architecture.png" alt="Architecture" width="800"/>
 </p>
+-->
 
 <p align="center">
   <a href="https://github.com/melan-devops1/portfolio-app"><img src="https://img.shields.io/badge/App-Spring_Boot-6DB33F?logo=springboot&logoColor=white"/></a>
@@ -42,9 +44,9 @@
 ### End-to-End Flow
 
 ```
-┌─────────────┐      ┌──────────────────┐      ┌──────────────────┐
-│  Developer  │─────▶│  GitHub (App)    │─────▶│ GitHub Actions   │
-└─────────────┘      └──────────────────┘      │  - Build         │
+┌─────────────┐       ┌──────────────────┐      ┌──────────────────┐
+│  Developer  │─────▶│  GitHub (App)    │─────▶│ GitHub Actions  │
+└─────────────┘       └──────────────────┘      │  - Build         │
                                                 │  - Test          │
                                                 │  - Trivy Scan    │
                                                 │  - Push to ECR   │
@@ -53,28 +55,28 @@
                                                          │
                                                          ▼
                                                 ┌──────────────────┐
-                                                │GitHub(Manifests) │
+                                                │ GitHub(Manifests)│
                                                 └────────┬─────────┘
                                                          │ watch
                                                          ▼
-┌──────────────────────────────────────────────┐  ┌──────────────┐
-│              AWS EKS Cluster                 │◀─│   ArgoCD     │
-│                                              │  └──────────────┘
+┌──────────────────────────────────────────────┐   ┌──────────────┐
+│              AWS EKS Cluster                 │◀─│    ArgoCD    │
+│                                              │   └──────────────┘
 │  ┌────────────────────────────────────────┐  │
 │  │         Istio Service Mesh             │  │
-│  │  ┌──────┐   ┌──────┐   ┌──────────┐   │  │
+│  │  ┌───────┐   ┌──────┐   ┌──────────┐   │  │
 │  │  │product│─▶│order │─▶│ payment  │   │  │
-│  │  └──────┘   └──────┘   └──────────┘   │  │
+│  │  └───────┘   └──────┘   └──────────┘   │  │
 │  └────────────────────────────────────────┘  │
 │                                              │
-│  ┌──────────────┐ ┌──────────────┐          │
-│  │  Prometheus  │ │  EFK Stack   │          │
-│  │  + Grafana   │ │  (Fluent Bit)│          │
-│  └──────────────┘ └──────────────┘          │
+│  ┌──────────────┐ ┌──────────────┐           │
+│  │  Prometheus  │ │  EFK Stack   │           │
+│  │  + Grafana   │ │  (Fluent Bit)│           │
+│  └──────────────┘ └──────────────┘           │
 │                                              │
-│  ┌──────────────┐ ┌──────────────┐          │
+│  ┌──────────────┐ ┌──────────────┐           │
 │  │    Jaeger    │ │ Alertmanager │──▶ Slack │
-│  └──────────────┘ └──────────────┘          │
+│  └──────────────┘ └──────────────┘           │
 └──────────────────────────────────────────────┘
 ```
 
