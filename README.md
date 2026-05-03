@@ -46,10 +46,8 @@
 - [x] **Phase 0**: 기반 세팅 (Org, 4 repos, AWS 계정, Budgets $80)
 - [x] **Phase 1**: Spring 앱 + 컨테이너화 (3 services, Trivy baseline 통과)
 - [x] **Phase 2**: Terraform AWS 인프라 (VPC, EKS 1.33, ECR, GitHub OIDC)
-- [ ] **Phase 3**: K8s 배포 + CI/CD (현재 진행 중 — product-service 배포 검증 완료)
-- [ ] **Phase 4**: Observability 풀스택 (Prometheus, EFK, Jaeger)
-- [ ] **Phase 5**: Service Mesh (Istio mTLS, Canary)
-- [ ] **Phase 6**: 문서화 + 블로그 포스팅
+- [x] **Phase 3**: K8s 배포 + CI/CD
+- [x] **Phase 4**: Observability 풀스택 (Prometheus, EFK, Jaeger)
 
 ---
 
@@ -119,14 +117,13 @@
 - **CI**: GitHub Actions + OIDC 페더레이션 (정적 자격증명 0개)
 - **CD / GitOps**: ArgoCD (Phase 6 도입 예정)
 
-### Observability (3-Pillar) — Phase 4 도입 예정
+### Observability (3-Pillar)
 - **Metrics**: Prometheus + Grafana (kube-prometheus-stack)
 - **Logs**: Elasticsearch + Fluent Bit + Kibana
 - **Traces**: Jaeger + OpenTelemetry
 
 ### Network & Security
-- **Ingress**: ALB Ingress Controller (Phase 3.4.6 도입 예정)
-- **Service Mesh**: Istio mTLS STRICT, VirtualService 기반 Canary (Phase 5)
+- **Ingress**: ALB Ingress Controller
 - **Image Scan**: Trivy (CI 빌드 시점) + ECR scan_on_push (다층 방어)
 - **Image 정책**: IMMUTABLE 태그, untagged 1일/tagged 10개 lifecycle
 - **Supply Chain**: Docker BuildKit attestation + SBOM 자동 생성 (SLSA 권장)
