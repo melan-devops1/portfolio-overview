@@ -38,7 +38,7 @@
 > Phase별 진행 현황. 1인 프로젝트 마무리 시점 기준.
 
 - [x] **Phase 0**: 기반 세팅 (Org, 4 repos, AWS 계정, Budgets $80)
-- [x] **Phase 1**: Spring 앱 + 컨테이너화 (3 services, Trivy baseline 통과, 130MB)
+- [x] **Phase 1**: Spring 앱 + 컨테이너화 (3 services, Trivy baseline 통과, ECR 압축 ~142MB)
 - [x] **Phase 2**: Terraform AWS 인프라 (VPC, EKS 1.33, ECR, GitHub OIDC)
 - [x] **Phase 3**: K8s 배포 + CI/CD + ArgoCD GitOps
 - [x] **Phase 4**: Observability 풀스택 (kube-prometheus-stack, EFK, Jaeger, RDS, OpenTelemetry)
@@ -367,7 +367,10 @@ ArgoCD가 관리하지 않는 자원 (kubectl 또는 helm으로 직접 배포):
 
 운영 수치를 측정 가능한 형태로 박제.
 
-- ✅ **Docker 이미지 사이즈**: 130MB (순진한 빌드 266MB 대비 **51% 감소**)
+- ✅ **Docker 이미지 사이즈** (실측 기준 = ECR 압축 / pull 네트워크 전송 = `docker save \| gzip`):
+  - **142.5 MB** (Phase 4 OpenTelemetry agent 동봉) — 3개 서비스 모두 동일 (압축 시 application/ 레이어 차이 0.1MB 미만으로 흡수)
+  - 디스크 점유는 299.3 MB, `docker images` 표시는 450 MB. 자세한 레이어별 breakdown은 각 서비스 Dockerfile 하단 표 참조
+  - OTel 추가 후 `ADD --chmod=644`로 중복 레이어 합쳐 압축 -20 MB / 디스크 -24 MB 절감 (162.5 → 142.5 MB)
 - ✅ **Trivy 보안 스캔**: 3개 이미지 모두 CRITICAL **0개** (HIGH 2개는 영향도 평가 후 baseline 등록)
 - ✅ **Terraform 자원**: VPC + EKS + ECR + RDS + ALB/EBS Pod Identity IAM
 - ✅ **인프라 apply 시간**: ~13분 (EKS Control Plane 생성 ~9분이 가장 오래)
@@ -397,7 +400,7 @@ ArgoCD가 관리하지 않는 자원 (kubectl 또는 helm으로 직접 배포):
 | [0006](https://github.com/melan-devops1/portfolio-app/blob/main/docs/adr/0006-dependency-version-unification.md) | 전 서비스 의존성 버전 통일 |
 | [0007](https://github.com/melan-devops1/portfolio-app/blob/main/docs/adr/0007-chaos-simulation.md) | payment-service 의도적 Chaos (5% 에러 + 100~2000ms 지연) |
 | [0008](https://github.com/melan-devops1/portfolio-app/blob/main/docs/adr/0008-docker-build-strategy.md) | 호스트 빌드 → Docker 패키징 분리 |
-| [0009](https://github.com/melan-devops1/portfolio-app/blob/main/docs/adr/0009-docker-image-optimization.md) | Multi-stage + Layered + Alpine JRE (130MB) |
+| [0009](https://github.com/melan-devops1/portfolio-app/blob/main/docs/adr/0009-docker-image-optimization.md) | Multi-stage + Layered + Alpine JRE + OTel (ECR 압축 142.5MB) |
 | [0010](https://github.com/melan-devops1/portfolio-app/blob/main/docs/adr/0010-security-scan-baseline.md) | Trivy CRITICAL 차단 / HIGH baseline 정책 |
 | [0020](https://github.com/melan-devops1/portfolio-app/blob/main/docs/adr/0020-ci-pipeline-github-actions.md) | GitHub Actions CI (OIDC + paths-filter + idempotent ECR push) |
 
